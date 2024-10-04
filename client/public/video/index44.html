@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic Exoplanet Orbit Simulation</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .controls label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        input[type="range"] {
+            width: 200px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h2>Planet Information</h2>
+        <p id="planetName">Planet Name: Proxima Centauri b</p>
+        <p id="planetType">Type: Super Earth</p>
+        <p id="planetMass">Mass: 1.07 Earths</p>
+        <p>Orbital Radius: <span id="radiusValue">6</span> AU</p>
+        <p id="orbitalPeriod">Orbital Period: 11.2 days</p>
+        <p id="eccentricity">Eccentricity: 0.02</p>
+        <p id="discoveryDate">Discovery Date: 2016</p>
+    </div>
+    <div class="controls">
+        <label for="radiusSlider">Orbit Radius:</label>
+        <input type="range" id="radiusSlider" min="3" max="15" value="6" step="0.1">
+        <label for="speedSlider">Orbit Speed:</label>
+        <input type="range" id="speedSlider" min="0.01" max="0.1" value="0.02" step="0.01">
+        <label for="sizeSlider">Planet Size:</label>
+        <input type="range" id="sizeSlider" min="0.1" max="2" value="0.7" step="0.1">
+        <br>
+        <button id="previousButton">Previous Planet</button>
+        <button id="nextButton">Next Planet</button>
+        <br>
+        <button id="viewButton">Planet Camera View</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        const exoplanets = [
+    {
+        name: "Proxima Centauri b",
+        type: "Super Earth",
+        mass: "1.07 Earths",
+        orbitalRadius: 6,
+        orbitalPeriod: "11.2 days",
+        eccentricity: "0.02",
+        discoveryDate: "2016",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjZDJDQLjo1qRYcTN4OJl7RI1arg9Jwl6myw&s",
+        starColor: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3F5gBEyIWc01fUImhKc-WMQRYURkh14cQitj2hZfrH5AQwskBz8S4SeEcGrDj7wERJvs&usqp=CAU" // Yellow star
+    },
+    {
+        name: "Kepler-186f",
+        type: "Super Earth",
+        mass: "1.17 Earths",
+        orbitalRadius: 7.5,
+        orbitalPeriod: "130 days",
+        eccentricity: "0.1",
+        discoveryDate: "2014",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSw3U6B5tIzLP4IXJn6adr2zHj9ZKtqrB2LcA&s",
+        starColor: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3F5gBEyIWc01fUImhKc-WMQRYURkh14cQitj2hZfrH5AQwskBz8S4SeEcGrDj7wERJvs&usqp=CAU"// Orange Red star
+    },
+    {
+        name: "TRAPPIST-1e",
+        type: "Earth-sized",
+        mass: "0.92 Earths",
+        orbitalRadius: 5,
+        orbitalPeriod: "6.1 days",
+        eccentricity: "0.0",
+        discoveryDate: "2017",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA32jK-yly1huX-PHqSBTmmdn2HNRtoPca4w&s",
+        starColor: 0x00ff00 // Green star
+    },
+    {
+        name: "Gliese 667 Cc",
+        type: "Super Earth",
+        mass: "4.5 Earths",
+        orbitalRadius: 7.7,
+        orbitalPeriod: "28.1 days",
+        eccentricity: "0.18",
+        discoveryDate: "2012",
+        texture: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAFwAXAMBIgACEQEDEQH/xAAbAAAABwEAAAAAAAAAAAAAAAAAAQIDBAYHBf/EADIQAAEEAAUDAgMGBwAAAAAAAAEAAgMRBAUSITEGQVFhcSIygRMUQlKR8AcVIyRiocH/xAAZAQACAwEAAAAAAAAAAAAAAAABBAADBQL/xAAdEQADAAIDAQEAAAAAAAAAAAAAAQIDEQQSITEi/9oADAMBAAIRAxEAPwDE62RBAj1QBI42UIGdxeyJGxpeQ1rSXHgBWPKOlpsTpkxRLG/lHKDpJbYUm/hXDuTQ+nKcjge5zQ5kgYTuQy6Hmu60vA9P4HDAaYWkjuRa6keCgbsI2/ol65UIuXHtmPFjm/OxzfcJI5WyvyzCTCnwsd7tC4uadFYLEtLsODDJ5ajPKx0CuPcmamrNXXa0O9rpZxkuMymWsQwujPyvHC51XZPFpgpCPhGeyKkZCgBP0QDS40Ls8DyUF3Ol8B96xf2r6LI+PdBvS2FLZ2umsibC0YjENuQ8X2VrhYAAANkzEwBoAUqFvfws3JkeRmhjxqEOBtbp+Iatjsm7th0j4vyjk+ykxuLQ0OFOrfyq+nhZ2Da0EbVqHqnQw7FJZGyRuq6ddURVp5jDq0ua4Hz6LioOlRFx2Xw42B0U8bXNcK3WT9UZDJkuM2BOHefgd49Fs+mqHdcrqXKY80yyWFzRqq2nwVbxs7iutfCjkYU12kxLf6IzulzROhlfHICHMdpNpFLVM8Sr50lhhFlzXEbu3VDPotJyBoGWw1+UKjkPWMtwrdo60YCfY9jXChyOUy0ccqRFpHIsnkpGR9jnxPxLWUADwS1TPu2qVrX1sNu+/hMxGQRN8A76ea/dJ5rbYXSvIDD4o1328qw4JEgjdvGPl5IGwS4yXPDrJadrIqwkMBiAA128/E52/sE5hTHqA01qqwSR9QualaDL2xwkHbmjyg5uoEEJ54b87X8cbInAXY+qTsYXqMU66wYwnUM1CmyAPVfv0Vy/ig0DOYK5+zN/qqYt2HuUzHpabQFoXSswlyyOuQKWe1as3RuPEUzsM8gB27VxmntDR1irrSZfY+yfZpoanbdx5TEVFSGMaWDjVfhZqejSfpLglbFTDYo3zx9VILohOWsk1X8QP+SiMeBR0guH4j/1PxMaHF0jtLq58jwu9nGidFh43RukmkDXPJsONj97BME6namkHSbO1BOWzSRJq3AHv7o2RNFyaud/VcdtHSkWyiG2Sdu57JR23SQKAA49Twoub46PL8vlxErgAxtqjTulKLG1Etsyr+ImIGJz9wa4H7JoZXklVfjYtBPqnsbin43GzYl/zSvLvZMLdS0tGPvfoScglfBK2WM05psFJHqiRAaV07m8eYYdoJAkbs4KwR8brG8JipsHMJYHlrh/tXnJOrYJg2LGf05OLPBSWfjt/qRvDn15Rc4/iAsp9rQG0N73JKg4bFQytDmPaQfBUxjx2ISVdp8aHE5r4yW46g0g9+E4DRUUSBu5cFBzHP8AL8vjLp52WOGjclcqLvxIjuI9bOxJM1jC55AAG5WVdedSfzOY4LCv/t2H4yPxFNdSdYYnNdUGFJhw/ffdyqxAK0eNxli/T+iOfO8ni+BUKQACG1o68psXCQI35tAIdz6KABSIhLaLDr7UieNJIChB7D4zF4U3h55GV4dsug3qTNmChiyfcLkdkbuENEOniM8zSdtPxklHwaXOc90hJkc5zu5cbRA7e6MDdEglDjlLITTyoEV6jlEbJ5RNJ4ShuFCH/9k=",
+        starColor: 0x8b4513 // Brown star
+    },
+    {
+        name: "Kepler-452b",
+        type: "Super Earth",
+        mass: "1.6 Earths",
+        orbitalRadius: 9.0,
+        orbitalPeriod: "385 days",
+        eccentricity: "0.08",
+        discoveryDate: "2015",
+        texture: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Kepler-452b_artist_concept.jpg/290px-Kepler-452b_artist_concept.jpg",
+        starColor: 0xffd700 // Gold star
+    },
+    {
+        name: "HD 40307 g",
+        type: "Super Earth",
+        mass: "7.1 Earths",
+        orbitalRadius: 11.0,
+        orbitalPeriod: "200.0 days",
+        eccentricity: "0.17",
+        discoveryDate: "2012",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfL7wO5Sw4UjsfzMTfg9I_6-0D3ZJlZP3gzw&s",
+        starColor: 0xff8c00 // Dark Orange star
+    },
+    {
+        name: "Kepler-22b",
+        type: "Super Earth",
+        mass: "2.4 Earths",
+        orbitalRadius: 10.9,
+        orbitalPeriod: "289 days",
+        eccentricity: "0.01",
+        discoveryDate: "2011",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9_KbwNRl8hRlWpeokPKnlF8SRp5LzUjH4dA&s",
+        starColor: 0xadd8e6 // Light Blue star
+    },
+    {
+        name: "LHS 1140 b",
+        type: "Super Earth",
+        mass: "1.4 Earths",
+        orbitalRadius: 5.0,
+        orbitalPeriod: "24.7 days",
+        eccentricity: "0.19",
+        discoveryDate: "2017",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCuZamFQRBe7yLxjPEYzXGtdHKZcT4D2X7Lg&s",
+        starColor: 0x4682b4 // Steel Blue star
+    },
+    {
+        name: "WASP-18b",
+        type: "Gas Giant",
+        mass: "10.4 Jupiter masses",
+        orbitalRadius: 1.0,
+        orbitalPeriod: "0.94 days",
+        eccentricity: "0.0",
+        discoveryDate: "2009",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0KczdOiOrXUZJpHxkDNcOUt20Upk-5lqCPg&s",
+        starColor: 0xff4500 // Orange Red star
+    },
+    {
+        name: "WASP-39b",
+        type: "Gas Giant",
+        mass: "1.5 Jupiter masses",
+        orbitalRadius: 1.2,
+        orbitalPeriod: "4.0 days",
+        eccentricity: "0.05",
+        discoveryDate: "2011",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7RaH92H1M0DAUo53F57rbCYbYl2cHMCCZ0g&s",
+        starColor: 0xffd700 // Gold star
+    },
+    {
+        name: "WASP-121b",
+        type: "Gas Giant",
+        mass: "1.2 Jupiter masses",
+        orbitalRadius: 1.8,
+        orbitalPeriod: "1.3 days",
+        eccentricity: "0.2",
+        discoveryDate: "2019",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRn0T_F6J64Z3_ksz0sHcXYUjAtzZ2w-3Xh9Q&s",
+        starColor: 0x00ff00 // Green star
+    },
+    {
+        name: "GJ 1132 b",
+        type: "Super Earth",
+        mass: "1.6 Earths",
+        orbitalRadius: 1.4,
+        orbitalPeriod: "1.6 days",
+        eccentricity: "0.02",
+        discoveryDate: "2015",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7U5eK9J5pOjEZaBq4PP5RzB08Hw4gWrk2Q&s",
+        starColor: 0x8b0000 // Dark Red star
+    },
+    {
+        name: "HD 209458 b",
+        type: "Gas Giant",
+        mass: "0.69 Jupiter masses",
+        orbitalRadius: 0.047,
+        orbitalPeriod: "3.5 days",
+        eccentricity: "0.0",
+        discoveryDate: "1999",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2M1UBpXkF7CRIFLFJFOoCMcI4op2wHtqNEA&s",
+        starColor: 0xadd8e6 // Light Blue star
+    },
+    {
+        name: "TRAPPIST-1d",
+        type: "Earth-sized",
+        mass: "0.78 Earths",
+        orbitalRadius: 4.0,
+        orbitalPeriod: "4.0 days",
+        eccentricity: "0.03",
+        discoveryDate: "2017",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo5Az9d8OuqgL9nMIc5PyNhlIFp9c3TwBRJg&s",
+        starColor: 0x8b4513 // Brown star
+    },
+    {
+        name: "K2-18b",
+        type: "Super Earth",
+        mass: "2.6 Earths",
+        orbitalRadius: 5.0,
+        orbitalPeriod: "33.0 days",
+        eccentricity: "0.09",
+        discoveryDate: "2015",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1K8wmbQw3WnZ9OkweGFLQ8eJvXtn8M7TRkg&s",
+        starColor: 0xffd700 // Gold star
+    },
+    {
+        name: "WASP-43b",
+        type: "Gas Giant",
+        mass: "2.0 Jupiter masses",
+        orbitalRadius: 0.015,
+        orbitalPeriod: "0.81 days",
+        eccentricity: "0.03",
+        discoveryDate: "2011",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbVb2NrSCtV1bCoQK7p7E0otUOgu64N7ZTwg&s",
+        starColor: 0x4682b4 // Steel Blue star
+    },
+    {
+        name: "Kepler-186c",
+        type: "Super Earth",
+        mass: "1.28 Earths",
+        orbitalRadius: 5.0,
+        orbitalPeriod: "130 days",
+        eccentricity: "0.09",
+        discoveryDate: "2014",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEF3Isb0LuBbFq0AbZPvbKiFg-TnoQ98bqA&s",
+        starColor: 0xff4500 // Orange Red star
+    },
+    {
+        name: "WASP-80b",
+        type: "Gas Giant",
+        mass: "0.53 Jupiter masses",
+        orbitalRadius: 0.05,
+        orbitalPeriod: "3.1 days",
+        eccentricity: "0.06",
+        discoveryDate: "2014",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7O8ZBOKD8yf6gPQK3-SlVb1GJquYwsSmZYA&s",
+        starColor: 0x00ff00 // Green star
+    },
+    {
+        name: "GJ 1214 b",
+        type: "Super Earth",
+        mass: "1.6 Earths",
+        orbitalRadius: 1.3,
+        orbitalPeriod: "1.5 days",
+        eccentricity: "0.02",
+        discoveryDate: "2009",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT3cn83Y9cHuFqf2HkRHRsXCdP6nAYF1VB3g&s",
+        starColor: 0x8b0000 // Dark Red star
+    },
+    {
+        name: "K2-141b",
+        type: "Super Earth",
+        mass: "1.5 Earths",
+        orbitalRadius: 0.07,
+        orbitalPeriod: "0.9 days",
+        eccentricity: "0.2",
+        discoveryDate: "2018",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV_63_vGklp3oOq6oe8aW4CCQ8sP89kX21GA&s",
+        starColor: 0xadd8e6 // Light Blue star
+    },
+    {
+        name: "WASP-49b",
+        type: "Gas Giant",
+        mass: "2.1 Jupiter masses",
+        orbitalRadius: 0.04,
+        orbitalPeriod: "2.4 days",
+        eccentricity: "0.03",
+        discoveryDate: "2015",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeQuQc9BmbOS4CKkGgOLYFRD37nd5jpptK8w&s",
+        starColor: 0x8b4513 // Brown star
+    },
+    {
+        name: "LHS 3844 b",
+        type: "Super Earth",
+        mass: "1.3 Earths",
+        orbitalRadius: 0.04,
+        orbitalPeriod: "1.3 days",
+        eccentricity: "0.01",
+        discoveryDate: "2019",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ12XrP6FseS2WwS8gxn3soUCexG9OwBDqSyw&s",
+        starColor: 0xffd700 // Gold star
+    },
+    {
+        name: "WASP-12b",
+        type: "Gas Giant",
+        mass: "1.4 Jupiter masses",
+        orbitalRadius: 0.02,
+        orbitalPeriod: "1.1 days",
+        eccentricity: "0.1",
+        discoveryDate: "2008",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf1m6DHS5GMIv6qWekTmeEE2ylKY29FPe2ew&s",
+        starColor: 0xff4500 // Orange Red star
+    },
+    {
+        name: "HD 97658 b",
+        type: "Super Earth",
+        mass: "1.2 Earths",
+        orbitalRadius: 0.06,
+        orbitalPeriod: "9.5 days",
+        eccentricity: "0.05",
+        discoveryDate: "2012",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyrkEKoFeK6vcLg5ewEtQ6euFrbdOrBrucOw&s",
+        starColor: 0x8b0000 // Dark Red star
+    },
+    {
+        name: "TOI 700 d",
+        type: "Super Earth",
+        mass: "1.2 Earths",
+        orbitalRadius: 7.5,
+        orbitalPeriod: "37 days",
+        eccentricity: "0.03",
+        discoveryDate: "2020",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTehUP3KcTx0ZwL6ZPrD1_4YxXw8v5P69wTZw&s",
+        starColor: 0x4682b4 // Steel Blue star
+    },
+    {
+        name: "K2-24b",
+        type: "Super Earth",
+        mass: "2.5 Earths",
+        orbitalRadius: 2.5,
+        orbitalPeriod: "15 days",
+        eccentricity: "0.2",
+        discoveryDate: "2017",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa_kjRCnR0L8gIokZ_HK1QxZG3FGpDiTXxzQ&s",
+        starColor: 0xff8c00 // Dark Orange star
+    },
+    {
+        name: "WASP-89b",
+        type: "Gas Giant",
+        mass: "1.9 Jupiter masses",
+        orbitalRadius: 0.06,
+        orbitalPeriod: "1.6 days",
+        eccentricity: "0.1",
+        discoveryDate: "2019",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbbPvUXVKiBNk8STrMJngs9t5KNaGZ8O_wiA&s",
+        starColor: 0x00ff00 // Green star
+    },
+    {
+        name: "WASP-57b",
+        type: "Gas Giant",
+        mass: "1.6 Jupiter masses",
+        orbitalRadius: 0.02,
+        orbitalPeriod: "1.9 days",
+        eccentricity: "0.01",
+        discoveryDate: "2018",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuPmmFGLk_S8TXQsS1OsB4-tkmNboW4R38EA&s",
+        starColor: 0xffd700 // Gold star
+    },
+    {
+        name: "HD 149026 b",
+        type: "Gas Giant",
+        mass: "0.36 Jupiter masses",
+        orbitalRadius: 0.034,
+        orbitalPeriod: "2.9 days",
+        eccentricity: "0.06",
+        discoveryDate: "2005",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ5kGPsmPtOaL3_DId_RSP85erAfWoWl3g0A&s",
+        starColor: 0xadd8e6 // Light Blue star
+    },
+    {
+        name: "WASP-60b",
+        type: "Gas Giant",
+        mass: "1.5 Jupiter masses",
+        orbitalRadius: 0.03,
+        orbitalPeriod: "1.2 days",
+        eccentricity: "0.04",
+        discoveryDate: "2018",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaGn5ZzHk7lBaA1NMb9mAv5Fs0sdnDNLJ1Tw&s",
+        starColor: 0xff4500 // Orange Red star
+    },
+    {
+        name: "WASP-33b",
+        type: "Gas Giant",
+        mass: "1.5 Jupiter masses",
+        orbitalRadius: 0.02,
+        orbitalPeriod: "1.2 days",
+        eccentricity: "0.01",
+        discoveryDate: "2015",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwbAd-8BGW5s7SIBkSOZpEwz6Dzw6bXUnUPQ&s",
+        starColor: 0x8b0000 // Dark Red star
+    },
+    {
+        name: "Kepler-16b",
+        type: "Gas Giant",
+        mass: "0.69 Jupiter masses",
+        orbitalRadius: 0.15,
+        orbitalPeriod: "41 days",
+        eccentricity: "0.04",
+        discoveryDate: "2011",
+        texture: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc59UVotBIVR3g1LR6ZAVybm0mEk8s2HVvA8&s",
+        starColor: 0x8b4513 // Brown star
+    }
+];
+
+        let currentExoplanetIndex = 0;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Add background space environment
+        const loader = new THREE.TextureLoader();
+        scene.background = loader.load('https://blenderartists.org/uploads/default/original/4X/7/e/2/7e2d7bea4ac21388c4a96e1371f375c4ce00094b.jpg');
+
+        // Add lighting effects
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        const pointLight = new THREE.PointLight(0xffffff, 2, 1000);
+        pointLight.position.set(0, 0, 0);
+        scene.add(ambientLight, pointLight);
+
+        // Load planet texture and create planet mesh
+        const createPlanet = (textureUrl) => {
+            const planetTexture = loader.load(textureUrl);
+            const planetGeometry = new THREE.SphereGeometry(0.7, 64, 64);
+            const planetMaterial = new THREE.MeshPhongMaterial({ map: planetTexture });
+            return new THREE.Mesh(planetGeometry, planetMaterial);
+        };
+
+        // Create the central star
+        const createStar = (color) => {
+            const starGeometry = new THREE.SphereGeometry(1, 64, 64);
+            const starMaterial = new THREE.MeshBasicMaterial({ color: color });
+            const star = new THREE.Mesh(starGeometry, starMaterial);
+            return star;
+        };
+
+        let planet = createPlanet(exoplanets[currentExoplanetIndex].texture);
+        let star = createStar(exoplanets[currentExoplanetIndex].starColor);
+
+        scene.add(star);
+
+
+        // Set initial camera position
+        camera.position.set(0, 5, 15);
+        camera.lookAt(0, 0, 0);
+
+        // Orbit controls for mouse interaction
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enablePan = false;
+
+        let planetAngle = 0;
+        let orbitSpeed = parseFloat(document.getElementById('speedSlider').value);
+        let orbitRadius = parseFloat(document.getElementById('radiusSlider').value);
+        let planetSize = parseFloat(document.getElementById('sizeSlider').value);
+        let planetCameraView = false;
+
+        function updatePlanetInfo() {
+            const exoplanet = exoplanets[currentExoplanetIndex];
+            document.getElementById("planetName").textContent = "Planet Name: " + exoplanet.name;
+            document.getElementById("planetType").textContent = "Type: " + exoplanet.type;
+            document.getElementById("planetMass").textContent = "Mass: " + exoplanet.mass;
+            document.getElementById("orbitalPeriod").textContent = "Orbital Period: " + exoplanet.orbitalPeriod;
+            document.getElementById("eccentricity").textContent = "Eccentricity: " + exoplanet.eccentricity;
+            document.getElementById("discoveryDate").textContent = "Discovery Date: " + exoplanet.discoveryDate;
+            document.getElementById("radiusValue").textContent = orbitRadius;
+            planet.material.map = loader.load(exoplanet.texture);
+            star.material.color.set(exoplanet.starColor);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            // Update the planet's position in orbit
+            planetAngle += orbitSpeed; // Increase the angle based on speed
+            const x = orbitRadius * Math.cos(planetAngle);
+            const z = orbitRadius * Math.sin(planetAngle);
+            planet.position.set(x, 0, z);
+
+            // Ensure the planet always faces the star
+            planet.lookAt(star.position);
+
+            // Update the renderer
+            renderer.render(scene, camera);
+        }
+
+        document.getElementById('radiusSlider').addEventListener('input', (event) => {
+            orbitRadius = parseFloat(event.target.value);
+        });
+
+        document.getElementById('speedSlider').addEventListener('input', (event) => {
+            orbitSpeed = parseFloat(event.target.value);
+        });
+
+        document.getElementById('sizeSlider').addEventListener('input', (event) => {
+            planet.scale.set(event.target.value, event.target.value, event.target.value);
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            currentExoplanetIndex = (currentExoplanetIndex + 1) % exoplanets.length;
+            updatePlanetInfo();
+        });
+
+        document.getElementById('previousButton').addEventListener('click', () => {
+            currentExoplanetIndex = (currentExoplanetIndex - 1 + exoplanets.length) % exoplanets.length;
+            updatePlanetInfo();
+        });
+
+        document.getElementById('viewButton').addEventListener('click', () => {
+            if (planetCameraView) {
+                camera.position.set(0, 5, 15);
+                planetCameraView = false;
+            } else {
+                const planetPosition = planet.position.clone();
+                camera.position.copy(planetPosition).add(new THREE.Vector3(0, 1, -3));
+                camera.lookAt(planet.position);
+                planetCameraView = true;
+            }
+        });
+
+        // Add planet to the scene
+        scene.add(planet);
+        animate(); 
+    </script>
+</body>
+</html>

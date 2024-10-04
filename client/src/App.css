@@ -1,0 +1,828 @@
+/* Landing Page Styling */
+
+.landing-page {
+  height: 100vh;
+  background: url('./Components/ProImages/LandingPagePic.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+}
+
+.hero-content {
+  max-width: 80%;
+  animation: fadeIn 2s ease-in-out;
+  z-index: 1;
+  margin-top: 80px;
+}
+
+
+.exo-model{
+  font-family:  "Poppins", sans-serif;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.lead {
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+button {
+  transition: transform 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+
+
+@media (max-width: 768px) {
+  .display-3 {
+    font-size: 2rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+}
+
+/* Nav bar Styling */
+
+
+.nav-center {
+  width:100%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  z-index: 999;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.nav a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.nav a:hover {
+  text-decoration: none;
+  color: #d1aaaa;
+}
+
+
+.nav-sec {
+  position: absolute;
+  top: 0;
+  background-color: rgba(8, 103, 211, 0.46);
+  border-radius: 30px;
+  margin-top: 7px;
+  display: f;
+
+}
+
+.nav-set .default-margin{
+  margin:0rem 35rem;
+}
+
+.act{
+  background-color: rgb(13, 176, 226); 
+}
+
+@media (max-width: 768px) {
+  .nav-center {
+    width:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    z-index: 999;
+    padding: 10px 0px;
+    margin: 0;
+  }
+
+  .nav {
+   display: flex;
+   justify-content: space-evenly;
+   overflow-y: scroll;
+   max-height: 60px;
+  }
+
+  .nav-item {
+  
+    margin: 8px 0; /* Vertical space between items */
+ 
+  }
+
+  .nav-link {
+    font-size: 1.2rem; /* Increase font size for better readability */
+    
+  }
+
+  .act {
+    padding: 8px 8px; /* Adjust padding for touch targets */
+  }
+
+  .nav-set .default-margin{
+    margin:0rem 0rem;
+  }
+}
+
+
+
+/* About us styling */
+
+/* About Us Section Styling */
+.about-us-section {
+  padding: 40px;
+  background: url("./Components/ProImages/AboutUsImage.png") no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  height: 100%;
+  position: relative;
+  overflow-y: hidden;
+}
+
+.about-us-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  z-index: -10; /* Send behind content */
+}
+
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between each team member */
+}
+
+.team-member {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  transition: background 0.3s, transform 0.3s; /* Add transform transition */
+  position: relative; /* For absolute positioning of animation */
+}
+
+.team-member:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.member-photo {
+  width: 120px; /* Adjust as needed */
+  height: 120px; /* Maintain aspect ratio */
+  border-radius: 50%; /* Circular image */
+  margin-right: 20px; /* Space between image and text */
+}
+
+.member-info {
+  flex: 1; /* Allow text to take remaining space */
+}
+
+.member-info h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.5rem; /* Increase font size */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Shadow for depth */
+}
+
+.member-info p {
+  font-size: 1rem; /* Set a standard font size */
+  line-height: 1.5; /* Improve readability */
+}
+
+.social-icons {
+  margin-top: 10px;
+}
+
+.social-icons a {
+  color: #00aced; /* Change color as needed */
+  margin-right: 10px; /* Space between icons */
+  text-decoration: none;
+}
+
+.social-icons a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .member-photo {
+    width: 100px; /* Smaller size for mobile */
+    height: 100px;
+  }
+  .about-us-section {
+    padding: 40px;
+    background: url("./Components/ProImages/AboutUsImage.png") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    height: 100%;
+    position: relative;
+    overflow-y: hidden;
+  }
+
+  .cards-container{
+    max-height: 65%;
+    overflow-y: scroll;
+  }
+  .progress-bar{
+    margin-top: 50px;
+  }
+}
+
+
+/* chat bot styling */
+
+/* Chatbot.css */
+
+/* Chatbot.css */
+
+.centerit {
+  /* height: 100vh; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url('./Components/ProImages/bgAi.jpg') no-repeat center center fixed;
+  background-size: cover;
+
+ 
+}
+
+.aiui.space-theme {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  width: 50vw;
+  height: 80vh;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+  margin-top:20px;
+}
+
+.userside {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userlogo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5em;
+}
+
+.out_disp {
+  overflow-y: scroll;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  height:250px;
+}
+
+.talkarea {
+  margin-top: 20px;
+
+}
+
+.talkarea textarea {
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  
+}
+
+.talkarea button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #1e90ff;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.talkarea button:hover {
+  background-color: #3742fa;
+}
+
+.separator {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 10px 0;
+}
+
+.msg-user {
+  text-align: right;
+}
+
+.msg-model {
+  text-align: left;
+}
+
+/* General Responsive Adjustments */
+.centerit {
+  height: auto; /* Remove fixed height */
+  padding: 20px; /* Add some padding */
+}
+
+.aiui.space-theme {
+  margin-top: 8rem;
+  width: 90vw; /* Adjust width for smaller screens */
+  max-width: 600px; /* Limit max width */
+  height: auto; /* Remove fixed height */
+}
+
+.out_disp {
+  max-height: 60vh; /* Limit height for scroll */
+}
+
+.talkarea textarea {
+  width: 100%; /* Full width */
+  min-height: 50px; /* Minimum height */
+}
+
+.talkarea button {
+  width: 100%; /* Full width */
+}
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+
+  .video-modal .modal-content{
+    height:30%;
+  }
+  .aiui.space-theme {
+    width: 95vw; /* Full width on smaller devices */
+  }
+
+  .userlogo {
+    font-size: 1.2em; /* Adjust logo size */
+  }
+
+  .msg-user, .msg-model {
+    font-size: 0.9em; /* Smaller font size for messages */
+  }
+
+  .quick-searches {
+    flex-direction: column; /* Stack buttons on small screens */
+    align-items: center; /* Center alignment */
+  }
+
+  .quick-searches button {
+    width: 100%; /* Full width for buttons */
+    margin-bottom: 10px; /* Space between buttons */
+  }
+}
+
+@media (max-width: 480px) {
+  .userlogo {
+    font-size: 1em; /* Further reduce logo size */
+  }
+
+  .talkarea textarea {
+    min-height: 40px; /* Smaller minimum height */
+  }
+
+  .talkarea button {
+    padding: 8px; /* Smaller padding */
+  }
+
+
+}
+
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(111, 0, 255); 
+  border-radius: 10px;
+  width:2px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(111, 0, 255); 
+}
+
+.no-resize{
+  resize: none;
+}
+
+
+
+
+/* Explore page styling */
+
+/* General Container */
+.explore-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #0d0d2b;
+  color: white;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Starry Background */
+.starry-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('./Components/ProImages/cartoon-galaxy-background/5471985.jpg') no-repeat center center fixed;
+  /* background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmtOMbTare_T8-82TJBC2_pSyakZl9e328CA&s') no-repeat center center fixed; */
+  background-size: cover;
+  z-index: -1;
+  animation: backgroundMove 60s linear infinite;
+}
+
+@keyframes backgroundMove {
+  0% { background-position: 0 0; }
+  100% { background-position: -1000px -1000px; }
+}
+
+/* Enhanced Progress Bar */
+.progress-bar {
+  width: 80%;
+  height: 12px;
+  background-color: rgba(51, 51, 110, 0.6); /* Semi-transparent background */
+  margin-bottom: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0px 0px 15px rgba(51, 51, 110, 0.8);
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff4b1f, #ff9068); /* Gradient from left to right */
+  border-radius: 20px;
+  transition: width 0.4s ease;
+  position: relative;
+  animation: progressGlow 1.5s ease-in-out infinite alternate;
+  box-shadow: 0px 0px 13px rgba(255, 144, 104, 0.8), 0px 0px 30px rgba(255, 75, 31, 0.5);
+}
+
+/* Animation for glowing effect */
+@keyframes progressGlow {
+  0% { box-shadow: 0px 0px 10px rgba(255, 144, 104, 0.5); }
+  100% { box-shadow: 0px 0px 30px rgba(255, 75, 31, 1); }
+}
+
+/* Space particles moving on top of the progress bar */
+.progress-bar-fill::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://static.vecteezy.com/system/resources/thumbnails/002/111/622/small/starry-cloud-with-dust-the-dust-is-yellow-sparks-and-golden-stars-shine-with-special-light-sparkles-christmas-light-effect-sparkling-magical-dust-particles-vector.jpg') repeat-x;
+  opacity: 0.3;
+  animation: moveParticles 10s linear infinite;
+  transform: translateY(-50%);
+}
+
+@keyframes moveParticles {
+  from { background-position: 0; }
+  to { background-position: 1000px; }
+}
+
+/* Cards Container */
+.cards-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Planet Card with Flip Animation */
+.planet-card {
+  background-color: transparent;
+  perspective: 1000px;
+  width: 240px;
+  height: 320px;
+  position: relative;
+ 
+}
+
+.card-inner {
+  border-radius: 15px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+}
+
+.planet-card:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.2);
+}
+
+.card-front {
+  background-color: #1b1b3a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.card-back {
+  background-color: #4a47a3;
+  color: white;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Planet Image */
+.planet-image-container {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 15px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.3);
+}
+
+.planet-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Navigation Buttons */
+.navigation-buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 12px 25px;
+  background-color: #4a47a3;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #5b5ba8;
+  transform: scale(1.05);
+}
+
+button:disabled {
+  background-color: #33336e;
+  cursor: not-allowed;
+}
+
+.planet-card {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.planet-card:hover .card-back .learn-more-btn {
+  display: block;
+}
+
+.learn-more-btn {
+  display: none;
+  background-color: #1e90ff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.learn-more-btn:hover {
+  background-color: #3742fa;
+}
+
+.planet-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  /* max-width: 500px; */
+  width: 90%;
+  height:90%;
+  text-align: center;
+  position: relative;
+  overflow-y: scroll;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+} 
+
+
+.planet-modal .close-btn{
+  position:fixed;
+  top: 3.5%;
+  right: 9%;
+  font-size: 24px;
+  background-color: red;
+  padding:5px;
+  border-radius: 50%;
+  padding-left:15px;
+  padding-right: 15px;
+
+}
+.planet-modal img {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+
+.video-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+}
+
+.video-modal .modal-content{
+  padding:0;
+  background-color: transparent;
+  overflow-y: hidden;
+}
+
+.video-modal .close-btn{
+  z-index: 1000000;
+  color: white;
+  background-color: red;
+  font-size: 24px;
+  margin-right: 15px;
+  margin-top: -10px;
+  padding:5px;
+  border-radius: 50%;
+  padding-left:15px;
+  padding-right: 15px;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 80%;
+  text-align: center;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #000;
+}
+
+
+body {
+  margin: 0;
+   /* Prevent scrolling */
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0; /* Set lower z-index for the canvas */
+}
+
+.info, .controls {
+  position: absolute;
+  color: white;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  border-radius: 5px; /* Rounded corners */
+  z-index: 1; /* Ensure it appears above the canvas */
+}
+
+.info {
+  top: 10px;
+  left: 10px;
+}
+
+.controls {
+  top: 10px;
+  right: 10px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+input[type="range"] {
+  width: 150px; /* Set a consistent width for sliders */
+}
+
+button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #007BFF; /* Button color */
+  color: white;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #0056b3; /* Darker blue on hover */
+}
+body {
+
+  background-size: cover; /* Ensures the image covers the entire background */
+  background-position: center;
+  background-repeat: no-repeat;
+}
